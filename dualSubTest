@@ -1,0 +1,45 @@
+#include <iostream>
+
+class B
+{
+  class A;
+  public:
+    B() { name = "Unknown"; value = 0; }
+    B(std::string n) { name = n; value = 0; }
+    std::string getName() const { return name; }
+    int          getVal() const { return value; }
+    void  update(int a) { value = a; }
+    void subscribe(A* a) { this->a = a; }
+    void publish(int c) { B::a->update(c); } 
+  private:
+    std::string name;
+    int value;
+    A* a;
+};
+
+class A
+{
+  public:
+    A() { value = 0; }
+    void subscribe(B* b) { this->b = b; }
+    void  publish(int c) { b->update(c); }
+    void   update(int c) { value = c; }
+  private:
+    B* b;
+    int value;
+};
+
+
+int main()
+{
+  A a;
+  B b1("b1");
+
+  a.subscribe(&b1);
+  b1.subscribe(&a);
+  
+  a.publish(14);
+  std::cout << b1.getVal() << std::endl;
+  
+  return 0;
+}
